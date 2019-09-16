@@ -2,6 +2,7 @@ const express = require("express");
 const server = express(); 
 const Users = require('../Users/userModel.js');
 const db = require('../Data/db_config.js');
+const bcrypt = require("bcryptjs");
 
 server.use(express.json());    
 server.get('/' , (req,res) => {
@@ -36,7 +37,9 @@ server.get('/' , (req,res) => {
 
  }) 
  server.post('/api/register' , (req,res) => { 
-     const user = req.body;
+     const user = req.body; 
+     const hash = bcrypt.hashSync(user.password , 12)
+     user.password = hash;
 
      Users.add(user)
      .then(saved => {
