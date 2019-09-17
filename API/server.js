@@ -4,10 +4,8 @@ const Users = require('../Users/userModel.js');
 const bcrypt = require("bcryptjs");
 const session = require('express-session'); 
 const db = require('../Data/db_config.js');
-const knexsession = require('connect-session-knex')
+const knexsession = require('connect-session-knex')(session);
 
-server.use(express.json());    
-server.use(session(sessionConfig));  
 const sessionConfig = {
   name : "HelloSession" ,
   secret : "word" ,
@@ -25,7 +23,11 @@ const sessionConfig = {
       createtable: true,
       clearInterval: 1000 * 20
   })
-};
+}; 
+
+server.use(express.json());    
+server.use(session(sessionConfig));  
+
 server.get('/' , (req,res) => {
     res.json({message:"Working ......"})
 })
@@ -46,6 +48,7 @@ server.get('/' , (req,res) => {
      .first()
      .then(user => {
          if(user && bcrypt.compareSync(password , user.password)) {
+             req.session.user = user;
              res.status(200).json({message : `${user.username}`});
          }
          else {
