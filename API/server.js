@@ -3,6 +3,7 @@ const server = express();
 const Users = require('../Users/userModel.js');
 const bcrypt = require("bcryptjs");
 const session = require('express-session'); 
+const helmet = require('helmet');
 const db = require('../Data/db_config.js');
 const knexsession = require('connect-session-knex')(session);
 
@@ -27,6 +28,7 @@ const sessionConfig = {
 
 server.use(express.json());    
 server.use(session(sessionConfig));  
+server.use(helmet());
 
 server.get('/' , (req,res) => {
     res.json({message:"Working ......"})
