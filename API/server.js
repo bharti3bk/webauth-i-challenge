@@ -2,9 +2,30 @@ const express = require("express");
 const server = express(); 
 const Users = require('../Users/userModel.js');
 const bcrypt = require("bcryptjs");
-const session = require('express-session');
+const session = require('express-session'); 
+const db = require('../Data/db_config.js');
+const knexsession = require('connect-session-knex')
 
 server.use(express.json());    
+server.use(session(sessionConfig));  
+const sessionConfig = {
+  name : "HelloSession" ,
+  secret : "word" ,
+  cookie : {
+      maxAge :  1000 * 20 , 
+      secure :  false ,
+      httpOnly : true,
+  } , 
+  resave : false , 
+  saveUnitialized : true , 
+  store: new knexsession({
+      Knex : db ,
+      tablename : "knexsession" ,
+      sidfieldname :"sessionid" ,
+      createtable: true,
+      clearInterval: 1000 * 20
+  })
+};
 server.get('/' , (req,res) => {
     res.json({message:"Working ......"})
 })
@@ -48,7 +69,23 @@ server.get('/' , (req,res) => {
      .catch(error => {
          res.status(500).json(error);
      })
-}) 
+})  
+
+server.get('/logout' , (req,res) => {
+    if(req.session){
+        req.session.destroy(err => {
+            if(err){
+                res.json(err);
+            }
+            else {
+                res.json({message : "ERROR"})
+            }
+        })
+    } 
+    else {
+        res.json({message : ""})
+    }
+})
 
 // MiddleWares 
  
