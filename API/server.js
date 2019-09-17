@@ -1,7 +1,6 @@
 const express = require("express"); 
 const server = express(); 
 const Users = require('../Users/userModel.js');
-const db = require('../Data/db_config.js');
 const bcrypt = require("bcryptjs");
 const session = require('express-session');
 
@@ -11,9 +10,9 @@ server.get('/' , (req,res) => {
 })
 
  server.get('/api/users' , isUserLoggedIn, (req, res) => {
-    Users.find()
-    .then(users => {
-        res.json(users);
+    Users.find() 
+    .then(users => { 
+        res.json(users)
     })
     .catch(error => {
         res.send(error);
@@ -37,7 +36,7 @@ server.get('/' , (req,res) => {
      })
 
  }) 
- server.post('/api/register' , (req,res) => { 
+ server.post('/api/register' , (req,res) => {  
      const user = req.body; 
      const hash = bcrypt.hashSync(user.password , 12)
      user.password = hash;
