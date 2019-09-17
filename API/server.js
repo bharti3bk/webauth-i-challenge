@@ -3,6 +3,7 @@ const server = express();
 const Users = require('../Users/userModel.js');
 const db = require('../Data/db_config.js');
 const bcrypt = require("bcryptjs");
+const session = require('express-session');
 
 server.use(express.json());    
 server.get('/' , (req,res) => {
