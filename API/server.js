@@ -50,9 +50,15 @@ server.get('/' , (req,res) => {
      Users.findBy({username})
      .first()
      .then(user => {
-         if(user && bcrypt.compareSync(password , user.password)) {
+         if(user && bcrypt.compareSync(password , user.password)) { 
+             const token = generateToken(user);
+
              req.session.user = user;
-             res.status(200).json({message : `${user.username}`});
+             res.status(200).json(
+                 { 
+                  message : `${user.username}`,
+                  token : token
+                });
          }
          else {
              res.status(401).json({message : "Invalid Cred"});
@@ -100,14 +106,23 @@ function isUserLoggedIn(req ,res, next) {
         next();
     }
     else {
-        req.json({message: 'You shall not pass!'})
+        res.json({message: 'You shall not pass!'})
     }
 }   
 
 // generate Token ......
 
-function generateToken(user){
-
+function generateToken(user){ 
+    const payload = {
+        subject : user.id,
+        username : user.username
+    }; 
+   const secret = 'ahiuhhfejwnfnfauhjaoda$$#43dsa$#%';
+    const options = {
+       expiresIn : '2h'
+    }
+    
+    return jwt.sign(payload , options ,  secret);
 }
 
 module.exports = server;  
