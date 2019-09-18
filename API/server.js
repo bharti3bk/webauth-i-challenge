@@ -104,7 +104,7 @@ function isUserLoggedIn(req ,res, next) {
     }
 }   
 
-// generate Token 
+// generate Token ..
 
 function generateToken(user){
 
