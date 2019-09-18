@@ -4,7 +4,8 @@ const Users = require('../Users/userModel.js');
 const bcrypt = require("bcryptjs");
 const session = require('express-session'); 
 const helmet = require('helmet');
-const db = require('../Data/db_config.js');
+const db = require('../Data/db_config.js'); 
+const jwt = require('jsonwebtoken');
 const knexsession = require('connect-session-knex')(session);
 
 const sessionConfig = {
@@ -101,6 +102,12 @@ function isUserLoggedIn(req ,res, next) {
     else {
         req.json({message: 'You shall not pass!'})
     }
-}  
+}   
+
+// generate Token 
+
+function generateToken(user){
+
+}
 
 module.exports = server;  
