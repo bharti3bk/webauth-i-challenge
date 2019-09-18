@@ -11,7 +11,7 @@ const sessionConfig = {
   name : "HelloSession" ,
   secret : "word" ,
   cookie : {
-      maxAge :  1000 * 20 , 
+      maxAge :  1000 * 50 , 
       secure :  false ,
       httpOnly : true,
   } , 
@@ -22,7 +22,7 @@ const sessionConfig = {
       tablename : "knexsession" ,
       sidfieldname :"sessionid" ,
       createtable: true,
-      clearInterval: 1000 * 20
+      clearInterval: 1000 * 50
   })
 }; 
 
@@ -95,27 +95,12 @@ server.get('/logout' , (req,res) => {
 // MiddleWares 
  
 function isUserLoggedIn(req ,res, next) {
-  const {username , password} = req.headers;
-
-  if(username && password){
-     Users.findBy({username})
-     .first()
-     .then(user => {
-         if(user && bcrypt.compareSync(password , user.password)) {
-           next();
-         }
-         else {
-             res.status(401).json({message : "Invalid Cred"});
-         }
-     }) 
-     .catch(error => {
-         res.status(500).json(error);
-     })
-  }
-  else{
-      res.status(400).json({message:'Invalid Creds'});
-  }
+    if (req.session && req.session.user) {
+        next();
+    }
+    else {
+        req.json({message: 'You shall not pass!'})
+    }
 }  
-
 
 module.exports = server;  
